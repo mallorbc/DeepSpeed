@@ -85,7 +85,7 @@ class DeepSpeedTransformerInference(nn.Module):
                                                dtype=data_type,
                                                device=device),
                                    requires_grad=False)
-        self.layer_past = None
+        # self.layer_past = None
         self.allocate_workspace = inference_cuda_module.allocate_workspace_fp32 if (not config.fp16) else \
                                 inference_cuda_module.allocate_workspace_fp16
 
@@ -134,9 +134,9 @@ class DeepSpeedTransformerInference(nn.Module):
         input_mask = input_mask if attention_mask is None else attention_mask
 
         # We set the prev key/value to None when there is a prompt
-        if input.shape[1] > 1:
-            self.layer_past = None
-        layer_past = layer_past if layer_past is not None else self.layer_past
+        # if input.shape[1] > 1:
+        #     self.layer_past = None
+        # layer_past = layer_past if layer_past is not None else self.layer_past
         head_mask = layer_head_mask if layer_head_mask is not None else head_mask
 
         attn_mask = None
@@ -163,7 +163,7 @@ class DeepSpeedTransformerInference(nn.Module):
                                               alibi)
 
             presents = (key, value)
-            self.layer_past = presents if layer_past is None else None
+            # self.layer_past = presents if layer_past is None else None
             output = self.mlp(attention_output, input, inp_norm, self.attention.attn_ob)
 
             if not self.config.pre_layer_norm:
